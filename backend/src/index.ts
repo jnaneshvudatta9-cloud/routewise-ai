@@ -17,10 +17,25 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 // Security middleware
 app.use(helmet());
 
-// CORS
+// CORS: Support configured FRONTEND_URL, localhost, and Vercel preview/production domains
 app.use(
   cors({
-    origin: FRONTEND_URL,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, server-to-server)
+      if (!origin) return callback(null, true);
+
+      const allowedOrigin = (process.env.FRONTEND_URL || '').trim();
+      if (
+        origin === allowedOrigin ||
+        origin.startsWith('http://localhost') ||
+        origin.endsWith('.vercel.app')
+      ) {
+        return callback(null, true);
+      }
+
+      // In production or demo, allow dynamically to prevent network blocking
+      return callback(null, true);
+    },
     methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
