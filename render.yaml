@@ -1,0 +1,32 @@
+services:
+  # 1. Backend Web Service (Node/Express)
+  - type: web
+    name: routewise-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+
+  # 2. Frontend Static Site (React/Vite)
+  - type: web
+    name: routewise-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        value: https://routewise-ai-1.onrender.com
+      - key: VITE_SUPABASE_URL
+        value: https://zdvavegjhpmvtynzjlzn.supabase.co
+      - key: VITE_SUPABASE_ANON_KEY
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpkdmF2ZWdqaHBtdnR5bnpqbHpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzMjQ0NDksImV4cCI6MjEwODkwMDQ0OX0.V6t6Rmr4qxtecEmgp0b0wRVmZCmjnQbaEu4J0Xiff2I

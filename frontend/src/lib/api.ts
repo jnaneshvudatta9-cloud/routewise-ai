@@ -1,16 +1,15 @@
 import axios from 'axios';
 import { supabase } from './supabase';
 
-// On Vercel (or any cloud static host), requests to /api are proxied by vercel.json directly to Render,
-// which eliminates CORS, cross-origin security blocks, and origin mismatch completely!
+// Default to live Render backend if VITE_API_URL is not explicitly provided
 const defaultApiUrl =
   typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? ''
+    ? 'https://routewise-ai-1.onrender.com'
     : 'http://localhost:3001';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || defaultApiUrl,
-  timeout: 30000,
+  timeout: 45000,
   headers: {
     'Content-Type': 'application/json',
   },
