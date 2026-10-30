@@ -1,11 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-key';
+let rawUrl = (process.env.SUPABASE_URL || '').trim();
+if (rawUrl && !rawUrl.match(/^https?:\/\//i)) {
+  rawUrl = `https://${rawUrl}`;
+}
+const supabaseUrl = rawUrl || 'https://placeholder.supabase.co';
+const supabaseServiceKey = (process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-key').trim();
 
 if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-  console.warn('Warning: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY not configured. Auth verification will fail until valid Supabase credentials are provided in .env');
+  console.warn('Warning: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY not configured. Auth verification will fail until valid Supabase credentials are provided.');
 }
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey, {
