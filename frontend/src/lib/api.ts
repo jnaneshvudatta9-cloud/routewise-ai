@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { supabase } from './supabase';
 
-// Check if running on localhost vs production cloud deployment
+// On Vercel (or any cloud static host), requests to /api are proxied by vercel.json directly to Render,
+// which eliminates CORS, cross-origin security blocks, and origin mismatch completely!
 const defaultApiUrl =
   typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? 'https://routewise-ai-1.onrender.com'
+    ? ''
     : 'http://localhost:3001';
 
 const api = axios.create({
