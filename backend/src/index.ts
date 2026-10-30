@@ -14,30 +14,19 @@ const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
-// Security middleware
-app.use(helmet());
+// Security middleware - disable helmet crossOriginResourcePolicy that blocks cloud cross-origin calls
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+  })
+);
 
-// CORS: Support configured FRONTEND_URL, localhost, and Vercel preview/production domains
+// CORS: Permissive origin callback to allow all Vercel domains, localhost, and custom domains
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, server-to-server)
-      if (!origin) return callback(null, true);
-
-      const allowedOrigin = (process.env.FRONTEND_URL || '').trim();
-      if (
-        origin === allowedOrigin ||
-        origin.startsWith('http://localhost') ||
-        origin.endsWith('.vercel.app')
-      ) {
-        return callback(null, true);
-      }
-
-      // In production or demo, allow dynamically to prevent network blocking
-      return callback(null, true);
-    },
-    methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: true, // Echoes the request origin, allowing all browsers to connect
+    methods: ['GET', 'POST', 'DELETE', 'OPTIONS', 'PUT', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
     credentials: true,
   })
 );
