@@ -4,6 +4,8 @@ import { Route } from 'lucide-react';
 import { LoginForm } from '../components/Auth/LoginForm';
 import { RegisterForm } from '../components/Auth/RegisterForm';
 import { useAuth } from '../hooks/useAuth';
+import { useAuthStore } from '../store/authStore';
+import type { User } from '@supabase/supabase-js';
 
 export function AuthPage() {
   const { isAuthenticated, loading } = useAuth();
@@ -89,7 +91,7 @@ export function AuthPage() {
           </div>
 
           {/* Footer */}
-          <div className="px-6 pb-5 text-center">
+          <div className="px-6 pb-5 text-center space-y-3">
             {activeTab === 'login' ? (
               <p className="text-xs text-gray-500">
                 Don't have an account?{' '}
@@ -111,6 +113,27 @@ export function AuthPage() {
                 </button>
               </p>
             )}
+
+            {/* Quick Demo Mode Login for Hackathons & Evaluators */}
+            <div className="pt-2 border-t border-gray-100">
+              <button
+                type="button"
+                onClick={() => {
+                  const demoUser = {
+                    id: 'demo-user-id',
+                    email: 'demo@routewise.local',
+                    app_metadata: {},
+                    user_metadata: { name: 'Demo Driver' },
+                    aud: 'authenticated',
+                    created_at: new Date().toISOString(),
+                  } as unknown as User;
+                  useAuthStore.setState({ user: demoUser, session: null, loading: false });
+                }}
+                className="w-full py-2 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 transition-colors flex items-center justify-center gap-1.5"
+              >
+                🚀 Continue as Demo / Guest Driver
+              </button>
+            </div>
           </div>
         </div>
 
