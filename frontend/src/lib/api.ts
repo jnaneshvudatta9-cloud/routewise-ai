@@ -4,7 +4,7 @@ import { supabase } from './supabase';
 // Check if running on localhost vs production cloud deployment
 const defaultApiUrl =
   typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? 'https://routewise-backend.onrender.com'
+    ? 'https://routewise-ai-1.onrender.com'
     : 'http://localhost:3001';
 
 const api = axios.create({
